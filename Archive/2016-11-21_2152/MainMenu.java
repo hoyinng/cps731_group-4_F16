@@ -33,7 +33,7 @@ public class MainMenu extends JPanel{
 				break;
 			}
 		}
-		return 0;
+		return 1;
 	}
 	protected void paintComponent(Graphics g) {
         super.paintComponent(g);       
