@@ -1,0 +1,4 @@
+Pannels & cardlayout are now use to switch between pannels
+The flow of the program in tetris.java are now define more clearly
+Each pannel now has a main_loop program representing the life cycle of that program
+Comment are added
