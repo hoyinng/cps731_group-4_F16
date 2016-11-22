@@ -26,13 +26,15 @@ public class Game extends JPanel {
     private int squareW = 20;
     private int squareH = 20;
     private int speed = 2000;
+    public boolean frozen;
+    public Timer myTimer;	// Timer Counting Down
     public Game() {
-
         setBorder(BorderFactory.createLineBorder(Color.black));
 
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 moveSquare(e.getX(),e.getY());
+                System.out.println("hello world");
             }
         });
 
@@ -48,10 +50,27 @@ public class Game extends JPanel {
             }
         };
 
-        new Timer(speed, taskPerformer).start();
+        myTimer = new Timer (2000, taskPerformer);
+        
         
 
-       
+    }
+    public void main_loop ()
+    {
+    	this.frozen = false;
+    	myTimer.start();
+    	while (true){
+    		System.out.println("In game");
+    	}
+    }
+    public void freeze ()
+    {
+    	this.frozen = true;
+    	myTimer.stop();
+    }
+    public void reset ()
+    {
+    	
     }
     private void moveSquare(int x, int y) {
         int OFFSET = 1;
@@ -70,7 +89,7 @@ public class Game extends JPanel {
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);       
-        g.drawString("This is my custom Panel!",10,20);
+        g.drawString("In game mode!",10,20);
         g.setColor(Color.RED);
         g.fillRect(squareX,squareY,squareW,squareH);
         g.setColor(Color.BLACK);
