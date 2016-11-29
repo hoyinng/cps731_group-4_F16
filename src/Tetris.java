@@ -77,10 +77,6 @@ public class Tetris extends JFrame
 			
 		}
 	}
-	public void paint()
-	{
-		
-	}
 	public void stop ()
 	{
 		
@@ -95,6 +91,7 @@ public class Tetris extends JFrame
 		frame.setSize(520,480);
 		frame.setResizable(false);
 		frame.setVisible(true);
+		frame.setFocusable(false);
 		frame.main_loop();
 	}
 
