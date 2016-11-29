@@ -10,13 +10,14 @@ import javax.swing.JPanel;
 public class MainMenu extends JPanel{
 	JLabel my_label;
 	Integer counter;
-	
+	Integer subStage=0;
 	public MainMenu (){
 		my_label = new JLabel ("SOMETEXT");
 		counter =0;
 		addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 counter +=1;
+                
                 repaint();
             }
         });
@@ -26,18 +27,12 @@ public class MainMenu extends JPanel{
 	 */
 	public int main_loop()
 	{
-		while (1==1)
-		{
-			if (this.counter > 10)
-			{
-				break;
-			}
-		}
 		return 1;
 	}
 	protected void paintComponent(Graphics g) {
         super.paintComponent(g);       
-        g.drawString("You are in main menu!!!! Click me 11 times to jump to game >"+(this.counter),10,20);
-		my_label.setLocation(100, 200);
+        g.drawString("Click me",10,20);
+        
+       
     }
 }

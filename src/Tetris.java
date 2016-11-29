@@ -18,7 +18,7 @@ public class Tetris extends JFrame
 	Game game;
 	MainMenu menu;
 	String keys [] = {"menu","game","setting","about"};
-	
+	Map map;
 	/* Tetris Constructor 
 	 * Tetris inherit from JFrame; This frame contains default_panel and default_panel contains layout
 	 * layout is a CardLayout Object containing multiple panel object such as Game and MainMenu
@@ -28,6 +28,8 @@ public class Tetris extends JFrame
 	{
 		super(program_name);
 		this.level = 0;
+		
+		this.map = new Map(40,40,25);
 		layout = new CardLayout();
 		default_panel = new JPanel (layout);
 		add(default_panel);
@@ -48,7 +50,7 @@ public class Tetris extends JFrame
 		CardLayout cl = (CardLayout)(default_panel.getLayout());
 		cl.show(default_panel, key);
 	}
-	
+
 	public void init()
 	{
 		this.stage = 0;
