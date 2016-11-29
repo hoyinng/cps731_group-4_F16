@@ -58,6 +58,7 @@ public class Game extends JPanel {
 	    		else if (e.getKeyChar() == 'w')
 	    		{
 	    			System.out.println("Transform");
+	    			user_block.roateCW();
 	    			//Transform
 	    		}
 	    		repaint();
@@ -72,7 +73,7 @@ public class Game extends JPanel {
             	repaint();
             }
         };
-        user_block = new Block(1, 0,0,30,Color.white);
+        user_block = new Block(1,30,Color.white);
         myTimer = new Timer (1000, taskPerformer);
     }
     public void main_loop ()
