@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 public class Tetris extends JFrame
 {
+	public static final int FRAME_WIDTH = 520, FRAME_HEIGHT = 480;
 	// (TODO)
 	
 	/* Stage represent  mainmenu, game, setting in numerical order */
@@ -88,7 +89,7 @@ public class Tetris extends JFrame
 		Tetris frame = new Tetris("Tetris Game");
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(520,480);
+		frame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setFocusable(false);
