@@ -6,6 +6,7 @@ public class Block {
 	/* Height is square level (Array Index) closest to the ground */ 
 	int x, y, type, width, height;
 	int blockMatrix [][];
+	int index_x, index_y;
 	/* Blocks (must be N X N) */
 	int shapeTypes [][][] ={
 			{
@@ -47,6 +48,9 @@ public class Block {
 	{
 		this.x=x;
 		this.y=0;
+		this.index_x = 0;
+		this.index_y = 0;
+		
 		this.clr = Color.RED;//color;
 		this.width = width;
 		randBlock();
@@ -142,16 +146,19 @@ public class Block {
 	}
 	public void moveDown ()
 	{
-		y+=width;
+		index_y += 1;
+		y=width*index_y;
 	}
 	public void moveLeft ()
 	{
-		x-=width;
+		index_x -=1;
+		x=width*index_x;
 		System.out.println("Moving right!");
 	}
 	public void moveRight ()
 	{
-		x+=width;
+		index_x +=1;
+		x=width*index_x;
 		System.out.println("Moving right!");
 	}
 	public void draw (Graphics g)

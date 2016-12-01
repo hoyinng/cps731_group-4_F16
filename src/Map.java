@@ -11,13 +11,20 @@ public class Map {
 	double scale = 0;
 	// MAP NEED TO BE AUTO SCALE
 	public Map (int maxx, int maxy, int block_width, boolean x){
-		this.number_of_squares_x = maxx / block_width ;
-		this.number_of_squares_y = maxy / block_width;
+		this.number_of_squares_x = maxx / block_width +1;
+		this.number_of_squares_y = maxy / block_width +1;
 		this.block_width = block_width;
 		
 		color_matrix = new Color [number_of_squares_x][number_of_squares_y];
 		integer_matrix = new int [number_of_squares_x][number_of_squares_y];
-		
+		System.out.println(maxx +  " " + maxy);
+		System.out.println(number_of_squares_x +  " " + number_of_squares_y);
+		for (int i=0;i<number_of_squares_x;i++){
+			for (int j=0;j<number_of_squares_y;j++){
+				integer_matrix[i][j] = 0;
+				color_matrix[i][j] = Color.white;
+			}				
+		}
 	}
 	public Map (int number_of_squares_x, int number_of_squares_y, int block_width)
 	{
@@ -53,7 +60,15 @@ public class Map {
 	{
 		setMatrix (index_x,index_y, aColor);
 	}
-	public void inConflict (int [][] matrix){
+	public void inConflict (int [][] matrix, int index_x, int index_y){
+		// IF OUT OF BOUND
+		if ((index_x < 0 ) || ( index_y < 0 ) || index_x >= number_of_squares_x || index_y >= number_of_squares_y){
+			return ;
+		}
+		
+		for (int i = index_x; i < matrix.length; i++){
+			
+		}
 		
 	}
 	/* Draws all the squares on the ground */

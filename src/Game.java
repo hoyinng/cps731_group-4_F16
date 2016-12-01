@@ -35,9 +35,9 @@ public class Game extends JPanel {
     Map map, working_map ;
     Block user_block;
     public Game() {
+    	super ();
         setBorder(BorderFactory.createLineBorder(Color.black));
         this.setFocusable(true);
-		this.map = new Map(40,40,30);
         addKeyListener (new KeyListener(){
         	public void keyPressed(KeyEvent e){
 	    		if (e.getKeyChar() == 'd')
@@ -78,9 +78,14 @@ public class Game extends JPanel {
         ActionListener taskPerformer = new ActionListener() {
         	public void actionPerformed(ActionEvent evt) {
             	user_block.moveDown();
+            	System.out.println(user_block.index_x + " " + user_block.index_y);
             	repaint();
             }
         };
+        this.setFocusable(true);
+		//this.map = new Map(40,40,30);
+        // HARD CODED
+		this.map = new Map(520,480,30,true);
         user_block = new Block(1,30,Color.black);
         myTimer = new Timer (1000, taskPerformer);
     }
@@ -103,10 +108,11 @@ public class Game extends JPanel {
     	
     }
     
-
+    
     public Dimension getPreferredSize() {
-        return new Dimension(250,200);
+        return new Dimension(1000,800);
     }
+    
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
