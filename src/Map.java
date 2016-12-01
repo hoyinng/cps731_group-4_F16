@@ -9,6 +9,16 @@ public class Map {
 	int number_of_squares_x, number_of_squares_y;
 	int block_width = 10;
 	double scale = 0;
+	// MAP NEED TO BE AUTO SCALE
+	public Map (int maxx, int maxy, int block_width, boolean x){
+		this.number_of_squares_x = maxx / block_width ;
+		this.number_of_squares_y = maxy / block_width;
+		this.block_width = block_width;
+		
+		color_matrix = new Color [number_of_squares_x][number_of_squares_y];
+		integer_matrix = new int [number_of_squares_x][number_of_squares_y];
+		
+	}
 	public Map (int number_of_squares_x, int number_of_squares_y, int block_width)
 	{
 		this.number_of_squares_x = number_of_squares_x;
@@ -43,8 +53,13 @@ public class Map {
 	{
 		setMatrix (index_x,index_y, aColor);
 	}
+	public void inConflict (int [][] matrix){
+		
+	}
+	/* Draws all the squares on the ground */
 	public void draw (Graphics g)
 	{
+		/*
 		for (int i =0;i<number_of_squares_x;i++)
 		{
 			for (int j=0; j<number_of_squares_y;j++)
@@ -63,5 +78,8 @@ public class Map {
 				
 			}
 		}
+		// Draws all the blocks in the bottom area
+		*/
+		
 	}
 }

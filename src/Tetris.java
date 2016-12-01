@@ -65,7 +65,7 @@ public class Tetris extends JFrame
 
 	public void init()
 	{
-		this.stage = 0;
+		this.stage = 1;
 		
 	}
 	/*	Main Life Cycle of the program

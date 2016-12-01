@@ -2,51 +2,79 @@ import java.awt.*;
 import java.util.Random;
 
 public class Block {
-	int x, y, type, width;
+	Color clr;
+	/* Height is square level (Array Index) closest to the ground */ 
+	int x, y, type, width, height;
 	int blockMatrix [][];
 	/* Blocks (must be N X N) */
 	int shapeTypes [][][] ={
 			{
-				{1,1,1,1},
+				{1,1,0,0},
 				{1,0,0,0},
 				{1,0,0,0},
-				{0,0,0,0}
-			},
-			{
-				{0,1},
-				{0,1}
+				{1,0,0,0}
+			},{
+				{1,1,0,0},
+				{0,1,0,0},
+				{0,1,0,0},
+				{0,1,0,0}
+			},{
+				{1,1},
+				{1,1}
 			
-			},
-			{
+			},{
 				{1,1,1},
 				{0,1,0},
 				{0,1,0},
 			
+			},{
+				{0,1,0},
+				{1,1,0},
+				{1,0,0}
+			},{
+				{1,0,0},
+				{1,1,0},
+				{0,1,0}
+			},{
+				{1,1,1,1},
+				{0,0,0,0},
+				{0,0,0,0},
+				{0,0,0,0}
 			}
 			
 	};
-	Color clr;
 	public Block (int x, int width, Color color)
 	{
 		this.x=x;
 		this.y=0;
-		this.clr = color;
-		randBlock();
+		this.clr = Color.RED;//color;
 		this.width = width;
+		randBlock();
+		
 	}
+	public void findHeight (){} // (TODO)
 	public void randBlock ()
 	{
+		// PRESET VALUE (TODO)
+		// REMOVE ALL PRESET AFTER
 		//Random rand = new Random();
-		this.type = 1;// rand.nextInt(3);
-		this.blockMatrix = shapeTypes[1];
+		this.type = 3;// rand.nextInt(3);
+		this.blockMatrix = shapeTypes[this.type].clone();
 	}
 	public void roateCW ()
 	{
+		// getRotateCW and getRotateCWM is modifying the matrix by reference
+		//this.printMatrix(this.getRotateCWM(this.blockMatrix));
 		this.blockMatrix = this.getRotateCW();
+		return;
 	}
-	public int [][] getRotateCW ()
+	public void rotateCCW (){
+		this.blockMatrix = this.getRotateCCW();
+		return;
+	}
+	// NEED TO DELETE AFTER
+	public int [][] getRotateCWM (int matrix[][])
 	{
-		int matrix [][] = this.blockMatrix;
 		int n = matrix.length;
 		for (int layer = 0; layer < n / 2; ++layer) {
 	        int first = layer;
@@ -54,7 +82,8 @@ public class Block {
 	        for(int i = first; i < last; ++i) {
 	            int offset = i - first;
 	            int top = matrix[first][i]; // save top
-
+	            // top = left, left = bottom, bottom = right, right = saved_top;
+	            
 	            // left -> top
 	            matrix[first][i] = matrix[last-offset][first];          
 
@@ -70,7 +99,47 @@ public class Block {
 	    }
 		return matrix;
 	}
-	public void rotateCCW (){}
+	public int [][] getRotateCW ()
+	{
+		int matrix [][] = this.blockMatrix.clone();//(new int  [this.blockMatrix.length][this.blockMatrix[0].length]);
+		System.out.println("THEY ARE THE SAME POINTER " + (matrix == this.blockMatrix.clone()));
+		System.out.println(matrix + " " + this.blockMatrix);
+		int n = matrix.length;
+		for (int layer = 0; layer < n / 2; ++layer) {
+	        int first = layer;
+	        int last = n - 1 - layer;
+	        for(int i = first; i < last; ++i) {
+	            int offset = i - first;
+	            int top = matrix[first][i]; // save top
+	            // top = left, left = bottom, bottom = right, right = saved_top;
+	            
+	            matrix[first][i] = matrix[last-offset][first];          
+	            matrix[last-offset][first] = matrix[last][last - offset]; 
+	            matrix[last][last - offset] = matrix[i][last]; 
+	            matrix[i][last] = top; 
+	        }
+	    }
+		return matrix;
+	}
+	public int [][] getRotateCCW ()
+	{
+		int matrix [][] = this.blockMatrix.clone();
+		int n= matrix.length;
+		for (int layer = 0; layer < n / 2; ++layer) {
+	        int first = layer;
+	        int last = n - 1 - layer;
+	        for(int i = first; i < last; ++i) {
+	            int offset = i - first;
+	            int bottom = matrix[last][last - offset];
+	            matrix[last][last - offset] = matrix[last-offset][first] ;
+	            matrix[last-offset][first] =  matrix[first][i];
+	            matrix[first][i] = matrix[i][last]; 
+	            matrix[i][last] = bottom;
+	        }
+	    }
+		return matrix;
+		
+	}
 	public void moveDown ()
 	{
 		y+=width;
@@ -87,25 +156,24 @@ public class Block {
 	}
 	public void draw (Graphics g)
 	{
-		((Graphics2D) g).setColor(this.clr);
-		((Graphics2D) g).fillRect(this.x,this.y,width,width);
-		
 		for (int i =0; i< this.blockMatrix.length;i++){
 			for (int j =0; j< this.blockMatrix[i].length;j++){
-				if (this.blockMatrix[i][j] == 1) { 
-					((Graphics2D) g).setColor(this.clr);
+				// if this section of the blocks have no squares
+				if (this.blockMatrix[i][j] == 0){
+					((Graphics2D) g).setColor(Color.white);
+					continue;
 				}else{
-					((Graphics2D) g).setColor(Color.WHITE);
+
+					((Graphics2D) g).setColor(this.clr);
 				}
-				System.out.println((this.x + i * width) + " " + this.y + " " + (this.x + (i+1)*width) + " " + width);
-				((Graphics2D) g).fillRect(this.x + i * width,this.y,this.x + (i+1)*width,width);
-				((Graphics2D) g).setColor(Color.BLACK);
-				((Graphics2D) g).drawRect(this.x + i * width,this.y,this.x + (i+1)*width,width);
-				
+				((Graphics2D) g).fillRect(this.x + width * j,this.y + width*i,width,width);
+
+				((Graphics2D) g).setColor(Color.black);
+				((Graphics2D) g).drawRect(this.x + width * j,this.y + width*i,width,width);
+				// Additional draw methods (TODO)
 			}
 		}
 		
-		System.out.println("X is " + this.x);
 	}
 	public void printMatrix (int [][] matrix)
 	{
