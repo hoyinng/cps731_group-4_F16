@@ -30,44 +30,65 @@ public class Game extends JPanel {
     private int speed = 2000;
     public boolean frozen;
     public Timer myTimer;	// Timer Counting Down
-    
+    public int maxx, maxy;
     
     Map map, working_map ;
     Block user_block;
-    public Game() {
+    public Game(int maxx, int maxy) {
     	super ();
+    	this.maxx=maxx;
+    	this.maxy=maxy;
         setBorder(BorderFactory.createLineBorder(Color.black));
         this.setFocusable(true);
         addKeyListener (new KeyListener(){
         	public void keyPressed(KeyEvent e){
 	    		if (e.getKeyChar() == 'd')
 	    		{
-	    			System.out.println("right");
-	    			user_block.moveRight();
+	    			System.out.println("hello world");
+	    			if (!map.conflict(user_block,user_block.index_x+1,user_block.index_y)){
+		    			System.out.println("right");
+		    			user_block.moveRight();
+	    			}
+	    			System.out.println("hello world");
 	    		}
 	    		else if (e.getKeyChar() == 'a')
 	    		{
-		    		System.out.println("LEFT");
-	    			user_block.moveLeft();
+	    			if (!map.conflict(user_block,user_block.index_x-1,user_block.index_y)){
+			    		System.out.println("LEFT");
+		    			user_block.moveLeft();
+	    			}
 	    		}
 	    		else if (e.getKeyChar() == 's')
 	    		{
+	    			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
+	            		map.addBlock (user_block,user_block.index_x, user_block.index_y);
+	            		user_block = new Block(1,30,Color.black);
+	            	}
 		    		System.out.println("Down");
 	    			user_block.moveDown();
+		    		repaint();
+	    			
 	    		}
 	    		else if (e.getKeyChar() == 'w')
 	    		{
-	    			System.out.println("rotateCW");
-	    			user_block.roateCW();
+	    			int [][] newMatrix = user_block.getRotateCWM(user_block.blockMatrix);
+	    			if (!map.conflict(newMatrix,user_block.findHeight(newMatrix),
+	    					user_block.findWeight(newMatrix), user_block.index_x, user_block.index_y)){
+		    			user_block.roateCW();
+	    			}
 	    			//Transform
 	    		}
 	    		else if (e.getKeyChar() == 'e')
 	    		{
-	    			System.out.println("rotate CCW");
-	    			user_block.rotateCCW();
+	    			int [][] newMatrix = user_block.getRotateCCWM(user_block.blockMatrix);
+	    			if (!map.conflict(newMatrix,user_block.findHeight(newMatrix),
+	    					user_block.findWeight(newMatrix), user_block.index_x, user_block.index_y)){
+		    			user_block.rotateCCW();
+	    			}
 	    		}
 	    		else if (e.getKeyChar() == 'q'){
 	    			user_block = new Block(1,30,Color.black);
+	    			
 	    		}
 	    		repaint();
         	}
@@ -78,14 +99,19 @@ public class Game extends JPanel {
         ActionListener taskPerformer = new ActionListener() {
         	public void actionPerformed(ActionEvent evt) {
             	user_block.moveDown();
-            	System.out.println(user_block.index_x + " " + user_block.index_y);
             	repaint();
+            	if (map.conflict(user_block, user_block.index_x, user_block.index_y)){
+            		map.addBlock (user_block,user_block.index_x, user_block.index_y-1);
+            		user_block = new Block(1,30,Color.black);
+            	}
+            	//System.out.println("MAP IN CONFLICT : " + map.conflict(user_block));
+            	
             }
         };
         this.setFocusable(true);
 		//this.map = new Map(40,40,30);
-        // HARD CODED
-		this.map = new Map(520,480,30,true);
+        // HARD CODED screen dimension
+		this.map = new Map(600,600,30,true);
         user_block = new Block(1,30,Color.black);
         myTimer = new Timer (1000, taskPerformer);
     }
@@ -110,7 +136,7 @@ public class Game extends JPanel {
     
     
     public Dimension getPreferredSize() {
-        return new Dimension(1000,800);
+        return new Dimension(maxx,maxy);
     }
     
     
