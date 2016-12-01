@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 public class Tetris extends JFrame
 {
-	public static final int FRAME_WIDTH = 520, FRAME_HEIGHT = 480;
+	public static final int FRAME_WIDTH = 540, FRAME_HEIGHT = 540;
 	public static final int STAGE_MENU = 0, STAGE_GAME = 1, STAGE_INSTRUCTIONS = 2, STAGE_HIGHSCORES = 3, STAGE_ABOUT = 4;
 	// (TODO)
 	
@@ -37,7 +37,7 @@ public class Tetris extends JFrame
 		default_panel = new JPanel (layout);
 		add(default_panel);
 		
-		game = new Game();
+		game = new Game(FRAME_HEIGHT,FRAME_WIDTH);
 		menu = new MainMenu ();
 		instructions = new InstructionsScreen();
 		highscores = new HighscoresScreen();
@@ -63,7 +63,7 @@ public class Tetris extends JFrame
 
 	public void init()
 	{
-		this.stage = 1;
+		this.stage = 0;
 		
 	}
 	/*	Main Life Cycle of the program
