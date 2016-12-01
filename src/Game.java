@@ -57,9 +57,17 @@ public class Game extends JPanel {
 	    		}
 	    		else if (e.getKeyChar() == 'w')
 	    		{
-	    			System.out.println("Transform");
+	    			System.out.println("rotateCW");
 	    			user_block.roateCW();
 	    			//Transform
+	    		}
+	    		else if (e.getKeyChar() == 'e')
+	    		{
+	    			System.out.println("rotate CCW");
+	    			user_block.rotateCCW();
+	    		}
+	    		else if (e.getKeyChar() == 'q'){
+	    			user_block = new Block(1,30,Color.black);
 	    		}
 	    		repaint();
         	}
@@ -73,7 +81,7 @@ public class Game extends JPanel {
             	repaint();
             }
         };
-        user_block = new Block(1,30,Color.white);
+        user_block = new Block(1,30,Color.black);
         myTimer = new Timer (1000, taskPerformer);
     }
     public void main_loop ()
