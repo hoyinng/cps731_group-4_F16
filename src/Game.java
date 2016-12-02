@@ -294,6 +294,7 @@ public class Game extends JPanel {
 		menuBtn.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e){
+				reset();
 				returnState = Tetris.STAGE_MENU;
 			}
 		});
