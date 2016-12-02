@@ -10,12 +10,16 @@ public class Game extends JPanel {
     private int squareW = 20;
     private int squareH = 20;
     
-    private int speed = 2000;
+    private int speed = 1300;
+    private final int SPEED_DECREMENT = 100;
+    private final int MAX_LEVEL = 10;
     public boolean frozen;
     public Timer myTimer;	// Timer Counting Down
     public int maxx, maxy;
+	ActionListener taskPerformer;
     
     Map map, working_map ;
+
     Block user_block;
 
 	private CustomButton pauseBtn, menuBtn;
@@ -23,6 +27,9 @@ public class Game extends JPanel {
 	public int returnState = Tetris.STAGE_GAME;
 	public LinkedList<Block> user_blocks;
 	private final int NUM_OF_PRELOADED_BLOCKS = 3;
+	private final int SCORE_PER_LINE = 100;
+	public int score, level, linesCleared, totalLinesCleared;
+	JLabel currentScoreLbl, currentLevelLbl;
     public Game(int maxx, int maxy) {
     	super ();
     	this.maxx=maxx;
@@ -54,7 +61,8 @@ public class Game extends JPanel {
 	    		else if (e.getKeyChar() == 's')
 	    		{
 	    			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
-	            		map.addBlock (user_block,user_block.index_x, user_block.index_y);
+	            		linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y);
+				updateStats(linesCleared);
 	            		user_block = getNextBlockRemoveLast();
 	            	}
 		    		System.out.println("Down");
@@ -86,7 +94,8 @@ public class Game extends JPanel {
 				else if(e.getKeyCode()==KeyEvent.VK_SPACE){
 					while(true){
               			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
-	            			map.addBlock (user_block,user_block.index_x, user_block.index_y);
+	            			linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y);
+					updateStats(linesCleared);
 	            			user_block = getNextBlockRemoveLast();
 							break;
 	            		}
@@ -101,12 +110,13 @@ public class Game extends JPanel {
 			public void keyTyped(KeyEvent e) {}
         });
         
-        ActionListener taskPerformer = new ActionListener() {
+        taskPerformer = new ActionListener() {
         	public void actionPerformed(ActionEvent evt) {
             	user_block.moveDown();
             	repaint();
             	if (map.conflict(user_block, user_block.index_x, user_block.index_y)){
-            		map.addBlock (user_block,user_block.index_x, user_block.index_y-1);
+            		linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y-1);
+			updateStats(linesCleared);
             		user_block = getNextBlockRemoveLast();
             	}
             	//System.out.println("MAP IN CONFLICT : " + map.conflict(user_block));
@@ -118,7 +128,7 @@ public class Game extends JPanel {
         // HARD CODED screen dimension
 		this.map = new Map(600,600,30,true);
         user_block = getNextBlockRemoveLast();
-        myTimer = new Timer (1000, taskPerformer);
+        myTimer = new Timer (speed, taskPerformer);
 
 		setPanel();
     }
@@ -136,9 +146,23 @@ public class Game extends JPanel {
 		return user_blocks.getFirst();
 	}
 
+	public void updateStats(int linesCleared){
+		score += linesCleared * SCORE_PER_LINE;
+		totalLinesCleared += linesCleared;
+		level = totalLinesCleared/10 + 1;
+		if (!currentLevelLbl.getText().equals(Integer.toString(level))){
+			if (level < MAX_LEVEL){
+				speed -= SPEED_DECREMENT;
+				myTimer.setDelay(speed);
+				currentLevelLbl.setText(Integer.toString(level));
+			}
+		}
+		currentScoreLbl.setText(Integer.toString(score));
+	}
+
     public int main_loop ()
     {
-		//myTimer.start();	
+		//myTimer.start();
 		requestFocus();
 		int temp = returnState;	
 
@@ -199,7 +223,33 @@ public class Game extends JPanel {
 		nextBlockLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 20, MainMenu.BTN_WIDTH*2, MainMenu.BTN_HEIGHT); 
 		nextBlockLbl.setFont(new Font("Dialog", Font.BOLD, 16));
 
+		JLabel currentScoreTextLbl = new JLabel ("Current Score:");
+		currentScoreTextLbl.setForeground(Color.WHITE);
+		currentScoreTextLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 200, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT); 
+		currentScoreTextLbl.setFont(new Font("Dialog", Font.BOLD, 16));
+
+		currentScoreLbl = new JLabel ("0");
+		currentScoreLbl.setForeground(Color.WHITE);
+		currentScoreLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		currentScoreLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 200+MainMenu.BTN_HEIGHT, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT); 
+		currentScoreLbl.setFont(new Font("Dialog", Font.BOLD, 16));
+
+		JLabel currentLevelTextLbl = new JLabel ("Level:");
+		currentLevelTextLbl.setForeground(Color.WHITE);
+		currentLevelTextLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 280, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT); 
+		currentLevelTextLbl.setFont(new Font("Dialog", Font.BOLD, 16));
+
+		currentLevelLbl = new JLabel ("1");
+		currentLevelLbl.setForeground(Color.WHITE);
+		currentLevelLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		currentLevelLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 280+MainMenu.BTN_HEIGHT, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT); 
+		currentLevelLbl.setFont(new Font("Dialog", Font.BOLD, 16));
+
 		add(nextBlockLbl);
+		add(currentScoreTextLbl);
+		add(currentScoreLbl);
+		add(currentLevelTextLbl);
+		add(currentLevelLbl);
 		add(menuBtn);
 		add(pauseBtn);
 	}
