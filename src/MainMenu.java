@@ -16,6 +16,8 @@ public class MainMenu extends JPanel{
 	// CORRESPONDS TO TETRIS.JAVA's HANDLING OF STAGES
 	public int returnState = Tetris.STAGE_MENU;
 
+	public static String name;
+
 	public MainMenu (){
 		setLayout(null);
 		setBackground(TETRIS_BLUE);
@@ -36,6 +38,8 @@ public class MainMenu extends JPanel{
 		startBtn.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e){
+				JFrame frame = new JFrame();
+    				name = JOptionPane.showInputDialog(frame, "Enter your name:");
 				returnState = Tetris.STAGE_GAME;
 			}
 		});
