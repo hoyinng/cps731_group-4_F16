@@ -2,6 +2,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.LinkedList;
+import java.io.*;
+import java.util.Scanner;
 
 public class Game extends JPanel {
 
@@ -32,8 +34,10 @@ public class Game extends JPanel {
 	private final int SCORE_PER_LINE = 100;
 	public int score, level, linesCleared, totalLinesCleared;
 	JLabel currentScoreLbl, currentLevelLbl;
+	public String name;
     public Game(int maxx, int maxy) {
     	super ();
+	
     	this.maxx=maxx;
     	this.maxy=maxy;
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -187,12 +191,59 @@ public class Game extends JPanel {
 
 		if (gameOver){
 			returnState = Tetris.STAGE_MENU;
-			// (TODO) Add to high score or something //
-			this.reset();
 			myTimer.stop();
+			boolean newHighscore = manageHighscore();
+			JFrame frame = new JFrame();
+			JOptionPane.showMessageDialog(frame, "Game Over :(");
+			if (newHighscore) {
+				JOptionPane.showMessageDialog(frame, "New Highscore: " + score + "!!!");
+			}
+			this.reset();
 		}
 		return temp;
     }
+
+	public boolean manageHighscore(){
+		try{
+			File f = new File("scoreboard.txt");
+			Scanner s = new Scanner(f);
+
+			int fileScore;
+			int line = 99;
+			boolean hasHighscore = false;
+			for (int i = 0; i < 10; i++){
+				s.next();
+				fileScore = s.nextInt();
+
+				if (score > fileScore){
+					line = i;
+					hasHighscore = true;
+					break;
+				}
+				s.nextLine();
+			}
+
+			if (hasHighscore){
+				s = new Scanner(f);
+				PrintWriter writer = new PrintWriter("scoreboardTemp.txt");
+				for (int i = 0; i < 10; i++){
+					if (line == i)
+						writer.println(MainMenu.name + " " + score);
+					else
+						writer.println(s.next() + " " + s.next());
+				}
+				writer.close();
+				File f2 = new File("scoreboardTemp.txt");
+				f2.renameTo(f);
+				return true;
+			}
+
+		} catch (FileNotFoundException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
     public void freeze ()
     {
     	this.frozen = true;
@@ -205,13 +256,18 @@ public class Game extends JPanel {
 	}
     public void reset ()
 	{
-    	this.score = 0;
-
+    		score = 0;
+		level = 0;
+		totalLinesCleared = 0;
+		linesCleared = 0;
+		currentScoreLbl.setText("0");
+		currentLevelLbl.setText("1");
+		
 		this.map = new Map(600,600,30,true);
 		user_block = getNextBlockRemoveLast ();
 		this.gameOver = false;
 		setBlocks ();
-    }
+    	}
     
     
     public Dimension getPreferredSize() {

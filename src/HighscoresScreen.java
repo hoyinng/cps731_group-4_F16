@@ -19,6 +19,8 @@ public class HighscoresScreen extends JPanel{
 
 	private int returnState = Tetris.STAGE_HIGHSCORES;
 
+	public boolean onScreen = false;
+
 	public HighscoresScreen(){
 		setLayout(null);
 		setBackground(MainMenu.TETRIS_BLUE);
@@ -50,6 +52,7 @@ public class HighscoresScreen extends JPanel{
 		backBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e){
+				onScreen = false;
 				returnState = Tetris.STAGE_MENU;
 			}
 		});
@@ -58,6 +61,8 @@ public class HighscoresScreen extends JPanel{
 	}
 
 	public int main_loop(){
+		if (!onScreen) updateEntries();
+		onScreen = true;
 		int temp = returnState;
 		returnState = Tetris.STAGE_HIGHSCORES;
 		return temp;
