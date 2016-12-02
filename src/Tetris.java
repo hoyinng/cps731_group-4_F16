@@ -74,6 +74,7 @@ public class Tetris extends JFrame
 	 *	After every operation, stage will be set back to 0
 	 */
 	public void main_loop(){
+		int flip = 0;
 		while (true)
 		{
 			changeLayout(keys[this.stage]);
@@ -82,11 +83,16 @@ public class Tetris extends JFrame
 			}
 			else if (this.stage == STAGE_GAME){
 				this.stage = this.game.main_loop();
+				flip = 0;
 			}
 			else if (this.stage == STAGE_INSTRUCTIONS){
 				this.stage = this.instructions.main_loop();
 			}
 			else if (this.stage == STAGE_HIGHSCORES){
+				if (flip == 0){
+					flip =1;
+					highscores.updateEntries();
+				}
 				this.stage = this.highscores.main_loop();
 			}
 			else if (this.stage == STAGE_ABOUT){
