@@ -15,7 +15,7 @@ public class InstructionsScreen extends JPanel{
 
 	private int maxPage = 2, minPage = 1, currentPage = 1;
 
-	private String[] pageInfo = {"<html><center>The point to tetris is to try your best to fit the blocks together.<br><br>With 7 different shapes of tetris blocks, you have attempt to move and rotate the blocks as they fall down so they fit together and fill lines. Each horizontal line on the grid that is filled up, will be cleared for space for more blocks. You get points for every line cleared.</center></html>", "<html>Controls:<br><br>W = Rotate Tetris Block<br>A = Move Tetris Block Left<br>S = Move Tetris Block Down Faster<br>D = Move Tetris Block Right<br><br>ESC = Pause</html>"};
+	private String[] pageInfo = {"<html><center>The point to tetris is to try your best to fit the blocks together.<br><br>With 7 different shapes of tetris blocks, you have attempt to move and rotate the blocks as they fall down so they fit together and fill lines. Each horizontal line on the grid that is filled up, will be cleared for space for more blocks. You get points for every line cleared.</center></html>", "<html>Controls:<br><br>W = Rotate Tetris Block<br>A = Move Tetris Block Left<br>S = Move Tetris Block Down Faster<br>D = Move Tetris Block Right<br>SPACE BAR = Drop Tetris Block<br><br>ESC = Pause</html>"};
 
 	private int returnState = Tetris.STAGE_INSTRUCTIONS;
 
