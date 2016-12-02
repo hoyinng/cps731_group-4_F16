@@ -242,8 +242,28 @@ public class Block {
 				((Graphics2D) g).drawRect(this.x + box_width * j,this.y + box_width*i,box_width,box_width);
 				// Additional draw methods (TODO)
 			}
-		}
-		
+		}	
+	}
+
+	public void drawInNextBlockArea(Graphics g)
+	{
+		for (int j =0; j< this.blockMatrix.length;j++){
+			for (int i =0; i< this.blockMatrix[j].length;i++){
+				// if this section of the blocks have no squares
+				if (this.blockMatrix[i][j] == 0){
+					((Graphics2D) g).setColor(Color.white);
+					continue;
+				}else{
+
+					((Graphics2D) g).setColor(this.clr);
+				}
+				((Graphics2D) g).fillRect(((10*25) + (Tetris.FRAME_WIDTH - (10*25))/2) - (MainMenu.BTN_WIDTH/3) + box_width * j + ((MainMenu.BTN_WIDTH/3)/2),65 + box_width*i + ((MainMenu.BTN_WIDTH/3)/2),box_width,box_width);
+
+				((Graphics2D) g).setColor(Color.black);
+				((Graphics2D) g).drawRect(((10*25) + (Tetris.FRAME_WIDTH - (10*25))/2) - (MainMenu.BTN_WIDTH/3) + box_width * j + ((MainMenu.BTN_WIDTH/3)/2),65 + box_width*i + ((MainMenu.BTN_WIDTH/3)/2),box_width,box_width);
+				// Additional draw methods (TODO)
+			}
+		}	
 	}
 	public void printMatrix (int [][] matrix)
 	{

@@ -1,24 +1,7 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Label;
-import java.awt.TextField;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseMotionAdapter;
-
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.LinkedList;
 
 public class Game extends JPanel {
 
@@ -34,12 +17,22 @@ public class Game extends JPanel {
     
     Map map, working_map ;
     Block user_block;
+
+	private CustomButton pauseBtn, menuBtn;
+
+	public int returnState = Tetris.STAGE_GAME;
+	public LinkedList<Block> user_blocks;
+	private final int NUM_OF_PRELOADED_BLOCKS = 3;
     public Game(int maxx, int maxy) {
     	super ();
     	this.maxx=maxx;
     	this.maxy=maxy;
         setBorder(BorderFactory.createLineBorder(Color.black));
         this.setFocusable(true);
+		
+		setBlocks();
+
+		setBackground(MainMenu.TETRIS_BLUE);
         addKeyListener (new KeyListener(){
         	public void keyPressed(KeyEvent e){
 	    		if (e.getKeyChar() == 'd')
@@ -62,12 +55,11 @@ public class Game extends JPanel {
 	    		{
 	    			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
 	            		map.addBlock (user_block,user_block.index_x, user_block.index_y);
-	            		user_block = new Block(1,30,Color.black);
+	            		user_block = getNextBlockRemoveLast();
 	            	}
 		    		System.out.println("Down");
 	    			user_block.moveDown();
 		    		repaint();
-	    			
 	    		}
 	    		else if (e.getKeyChar() == 'w')
 	    		{
@@ -87,9 +79,22 @@ public class Game extends JPanel {
 	    			}
 	    		}
 	    		else if (e.getKeyChar() == 'q'){
-	    			user_block = new Block(1,30,Color.black);
+	    			user_block = getNextBlockRemoveLast();
 	    			
 	    		}
+				//SPACEBAR TO DROP THE BLOCK DOWN RIGHT AWAY
+				else if(e.getKeyCode()==KeyEvent.VK_SPACE){
+					while(true){
+              			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
+	            			map.addBlock (user_block,user_block.index_x, user_block.index_y);
+	            			user_block = getNextBlockRemoveLast();
+							break;
+	            		}
+		    			System.out.println("Down");
+	    				user_block.moveDown();
+					}
+		    		repaint();
+         		}
 	    		repaint();
         	}
 			public void keyReleased(KeyEvent e) {}
@@ -102,7 +107,7 @@ public class Game extends JPanel {
             	repaint();
             	if (map.conflict(user_block, user_block.index_x, user_block.index_y)){
             		map.addBlock (user_block,user_block.index_x, user_block.index_y-1);
-            		user_block = new Block(1,30,Color.black);
+            		user_block = getNextBlockRemoveLast();
             	}
             	//System.out.println("MAP IN CONFLICT : " + map.conflict(user_block));
             	
@@ -112,37 +117,114 @@ public class Game extends JPanel {
 		//this.map = new Map(40,40,30);
         // HARD CODED screen dimension
 		this.map = new Map(600,600,30,true);
-        user_block = new Block(1,30,Color.black);
+        user_block = getNextBlockRemoveLast();
         myTimer = new Timer (1000, taskPerformer);
+
+		setPanel();
     }
-    public void main_loop ()
+
+	public void setBlocks(){
+		user_blocks = new LinkedList<Block>();
+		for (int i = 0; i < NUM_OF_PRELOADED_BLOCKS; i++){
+			user_blocks.addLast(new Block(1, 30, Color.black));
+		}
+	}
+
+	public Block getNextBlockRemoveLast(){
+		user_blocks.addLast(new Block(1, 30, Color.black));
+		user_blocks.removeFirst();
+		return user_blocks.getFirst();
+	}
+
+    public int main_loop ()
     {
-    	this.frozen = false;
-    	myTimer.start() ;
-    	while (true)
-    	{
-    		
-    	}
+		//myTimer.start();	
+		requestFocus();
+		int temp = returnState;	
+
+		if (temp == Tetris.STAGE_PAUSE) myTimer.stop();
+		else myTimer.start();
+
+		if (temp == Tetris.STAGE_MENU) myTimer.stop();
+		else myTimer.start();
+			
+		returnState = Tetris.STAGE_GAME;
+		return temp;
     }
     public void freeze ()
     {
     	this.frozen = true;
     	myTimer.stop();
     }
+
+	public void unFreeze(){
+		this.frozen = false;
+		myTimer.start();
+	}
     public void reset ()
-    {
-    	
+	{
     }
     
     
     public Dimension getPreferredSize() {
         return new Dimension(maxx,maxy);
     }
+
+	public void setPanel(){
+		setLayout(null);
+
+		frozen = false;
+		pauseBtn = new CustomButton("Pause Game");
+		menuBtn = new CustomButton("Main Menu");
+		
+		menuBtn.setBounds((10*30) + ((Tetris.FRAME_WIDTH - (10*30))/2) - MainMenu.BTN_WIDTH/2, Tetris.FRAME_HEIGHT-100, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT); 
+		pauseBtn.setBounds((10*30) + ((Tetris.FRAME_WIDTH - (10*30))/2) - MainMenu.BTN_WIDTH/2, Tetris.FRAME_HEIGHT-100-MainMenu.BTN_HEIGHT-MainMenu.BTN_PADDING, MainMenu.BTN_WIDTH, MainMenu.BTN_HEIGHT);
+
+		pauseBtn.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e){
+				returnState = Tetris.STAGE_PAUSE;
+			}
+		});
+		
+		menuBtn.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e){
+				returnState = Tetris.STAGE_MENU;
+			}
+		});
+
+		JLabel nextBlockLbl = new JLabel ("Next Block:");
+		nextBlockLbl.setForeground(Color.WHITE);
+		nextBlockLbl.setBounds((Tetris.FRAME_WIDTH - (10*30)/2) - MainMenu.BTN_WIDTH/2, 20, MainMenu.BTN_WIDTH*2, MainMenu.BTN_HEIGHT); 
+		nextBlockLbl.setFont(new Font("Dialog", Font.BOLD, 16));
+
+		add(nextBlockLbl);
+		add(menuBtn);
+		add(pauseBtn);
+	}
     
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         map.draw(g);
         user_block.draw(g);
+
+		Graphics2D g2d = (Graphics2D) g;
+
+   		g2d.setColor(new Color(193, 238, 244));
+		g2d.setStroke(new BasicStroke(5));
+    	g2d.drawRect((10*30)+1, 0, Tetris.FRAME_WIDTH-(10*30), Tetris.FRAME_HEIGHT);
+
+		g2d.setColor(new Color(25, 115, 178));
+    	g2d.fillRect((10*30)+2, 0, Tetris.FRAME_WIDTH-(10*30), Tetris.FRAME_HEIGHT);
+
+		g2d.setColor(new Color(193, 238, 244));
+		g2d.fillRect((10*30) + ((Tetris.FRAME_WIDTH - (10*30))/2) - (MainMenu.BTN_WIDTH/3)-3, 65-3, (MainMenu.BTN_WIDTH/3)*2+6, (MainMenu.BTN_WIDTH/3)*2+6);
+		g2d.setColor(MainMenu.TETRIS_BLUE);
+    	g2d.fillRect((10*30) + ((Tetris.FRAME_WIDTH - (10*30))/2) - (MainMenu.BTN_WIDTH/3), 65, (MainMenu.BTN_WIDTH/3)*2, (MainMenu.BTN_WIDTH/3)*2);
+
+		g2d.setStroke(new BasicStroke(1));
+		user_blocks.get(1).drawInNextBlockArea(g);
     }
 }

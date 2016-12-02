@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 
 public class Tetris extends JFrame
 {
-	public static final int FRAME_WIDTH = 540, FRAME_HEIGHT = 540;
-	public static final int STAGE_MENU = 0, STAGE_GAME = 1, STAGE_INSTRUCTIONS = 2, STAGE_HIGHSCORES = 3, STAGE_ABOUT = 4;
+	public static final int FRAME_WIDTH = 570, FRAME_HEIGHT = 540;
+	public static final int STAGE_MENU = 0, STAGE_GAME = 1, STAGE_INSTRUCTIONS = 2, STAGE_HIGHSCORES = 3, STAGE_ABOUT = 4, STAGE_PAUSE = 5;
 	// (TODO)
 	
 	/* Stage represent  mainmenu, game, setting in numerical order */
@@ -22,7 +22,8 @@ public class Tetris extends JFrame
 	InstructionsScreen instructions;
 	HighscoresScreen highscores;
 	AboutScreen about;
-	String keys [] = {"menu","game","instructions","highscores","about"};
+	PauseScreen pause;
+	String keys [] = {"menu","game","instructions","highscores","about", "pause"};
 	/* Tetris Constructor 
 	 * Tetris inherit from JFrame; This frame contains default_panel and default_panel contains layout
 	 * layout is a CardLayout Object containing multiple panel object such as Game and MainMenu
@@ -42,6 +43,7 @@ public class Tetris extends JFrame
 		instructions = new InstructionsScreen();
 		highscores = new HighscoresScreen();
 		about = new AboutScreen();
+		pause = new PauseScreen();
 		
 		// adding the (panel,key)
 		default_panel.add(menu, "menu");	
@@ -49,6 +51,7 @@ public class Tetris extends JFrame
 		default_panel.add(instructions, "instructions");
 		default_panel.add(highscores, "highscores");
 		default_panel.add(about, "about");
+		default_panel.add(pause, "pause");
 		
 		
 		this.init();	// Initialize tetris game state
@@ -78,8 +81,7 @@ public class Tetris extends JFrame
 				this.stage = this.menu.main_loop();
 			}
 			else if (this.stage == STAGE_GAME){
-				this.game.main_loop();
-				break;
+				this.stage = this.game.main_loop();
 			}
 			else if (this.stage == STAGE_INSTRUCTIONS){
 				this.stage = this.instructions.main_loop();
@@ -89,6 +91,9 @@ public class Tetris extends JFrame
 			}
 			else if (this.stage == STAGE_ABOUT){
 				this.stage = this.about.main_loop();
+			}
+			else if (this.stage == STAGE_PAUSE){
+				this.stage = this.pause.main_loop();
 			}
 		}
 	}
