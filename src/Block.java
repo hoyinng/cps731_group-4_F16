@@ -68,7 +68,7 @@ public class Block {
 		this.type =  rand.nextInt(7);
 		this.blockMatrix = shapeTypes[this.type].clone();
 
-		this.clr = colorArr[this.type];//Color.RED;//color;
+		this.clr = colorArr[this.type];
 		this.width =0;
 		this.height =0;
 		findHeight();
@@ -216,13 +216,11 @@ public class Block {
 	{
 		index_x -=1;
 		x=box_width*index_x;
-		System.out.println("Moving right!");
 	}
 	public void moveRight ()
 	{
 		index_x +=1;
 		x=box_width*index_x;
-		System.out.println("Moving right!");
 	}
 	public void draw (Graphics g)
 	{
