@@ -86,25 +86,31 @@ public class Map {
 	
 	public void addBlock (Block aBlock, int index_x, int index_y){
 		int [][] matrix = aBlock.blockMatrix;
+		boolean newRow;
+		int rowCount = 0;
 		for (int i = 0; i < matrix.length; i++){
+			newRow = true;
 			for (int j = 0; j < matrix[i].length; j++){
 				if ( (matrix [i][j] == 1) ) {
+					if (newRow) rowCount++;	
 					this.integer_matrix [i+index_y][j+index_x] = matrix[i][j];
 					this.color_matrix[i+index_y][j+index_x] = aBlock.clr;
-				}
+					newRow = false;
+				}			
 			}
 			
 		}
-		checkLines(index_y, index_y+matrix.length);
+		checkLines(index_y, index_y + rowCount);
 	}
-	
+
 	public void checkLines (int y1, int y2)
 	{
+		System.out.println("Y1 = " + y1 + "Y = " + y2);
 		boolean clearedRow = true;
 		ArrayList<Integer> rowsToClear = new ArrayList<Integer>();
 		for (int i=y1; i < y2;i++){
 			clearedRow = true;
-			for (int j=0; j < this.integer_matrix[i].length;j++){
+			for (int j=0; j < this.integer_matrix[i].length; j++){
 				if (this.integer_matrix[i][j]==0) { clearedRow = false; break;}
 			}
 			if (clearedRow) { rowsToClear.add(i); }
