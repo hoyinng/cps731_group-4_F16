@@ -3,9 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MainMenu extends JPanel{
-	public final int BTN_WIDTH = 200;
-	public final int BTN_HEIGHT = 40;
-	public final int BTN_PADDING = 10;
+	public static final int BTN_WIDTH = 200;
+	public static final int BTN_HEIGHT = 40;
+	public static final int BTN_PADDING = 10;
 	public int menuBtnsX = (Tetris.FRAME_WIDTH/2)-(BTN_WIDTH/2);
 	public int menuBtnsY = (Tetris.FRAME_HEIGHT/5)*2;
 
