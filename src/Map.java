@@ -84,7 +84,8 @@ public class Map {
 		
 	}
 	
-	public void addBlock (Block aBlock, int index_x, int index_y){
+	// returns number of lines cleared after adding block
+	public int addBlock (Block aBlock, int index_x, int index_y){
 		int [][] matrix = aBlock.blockMatrix;
 		boolean newRow;
 		int rowCount = 0;
@@ -100,10 +101,10 @@ public class Map {
 			}
 			
 		}
-		checkLines(index_y, index_y + rowCount);
+		return checkLines(index_y, index_y + rowCount);
 	}
 
-	public void checkLines (int y1, int y2)
+	public int checkLines (int y1, int y2)
 	{
 		System.out.println("Y1 = " + y1 + "Y = " + y2);
 		boolean clearedRow = true;
@@ -115,9 +116,12 @@ public class Map {
 			}
 			if (clearedRow) { rowsToClear.add(i); }
 		}
-		if (!rowsToClear.isEmpty())
+		if (!rowsToClear.isEmpty()){
 			clearLines(rowsToClear);
+		}
+		int linesCleared = rowsToClear.size();
 		rowsToClear.clear();
+		return linesCleared;
 	}
 	public void clearLines (ArrayList<Integer> linesToClear){
 		for(int row : linesToClear){
