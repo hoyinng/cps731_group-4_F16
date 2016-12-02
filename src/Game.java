@@ -16,6 +16,8 @@ public class Game extends JPanel {
     public boolean frozen;
     public Timer myTimer;	// Timer Counting Down
     public int maxx, maxy;
+    
+    public boolean gameOver;
 	ActionListener taskPerformer;
     
     Map map, working_map ;
@@ -38,18 +40,16 @@ public class Game extends JPanel {
         this.setFocusable(true);
 		
 		setBlocks();
-
+		this.gameOver = false;
 		setBackground(MainMenu.TETRIS_BLUE);
         addKeyListener (new KeyListener(){
         	public void keyPressed(KeyEvent e){
 	    		if (e.getKeyChar() == 'd')
 	    		{
-	    			System.out.println("hello world");
 	    			if (!map.conflict(user_block,user_block.index_x+1,user_block.index_y)){
 		    			System.out.println("right");
 		    			user_block.moveRight();
 	    			}
-	    			System.out.println("hello world");
 	    		}
 	    		else if (e.getKeyChar() == 'a')
 	    		{
@@ -61,8 +61,11 @@ public class Game extends JPanel {
 	    		else if (e.getKeyChar() == 's')
 	    		{
 	    			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
+	    				if (user_block.index_y <=0) {  
+    						gameOver = true;
+    					}
 	            		linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y);
-				updateStats(linesCleared);
+	            		updateStats(linesCleared);
 	            		user_block = getNextBlockRemoveLast();
 	            	}
 		    		System.out.println("Down");
@@ -94,8 +97,12 @@ public class Game extends JPanel {
 				else if(e.getKeyCode()==KeyEvent.VK_SPACE){
 					while(true){
               			if (map.conflict(user_block, user_block.index_x, user_block.index_y+1)){
+    	    				if (user_block.index_y <=1) { 
+    	    						gameOver = true;
+    	    					}
+    	        				
 	            			linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y);
-					updateStats(linesCleared);
+	            			updateStats(linesCleared);
 	            			user_block = getNextBlockRemoveLast();
 							break;
 	            		}
@@ -115,8 +122,13 @@ public class Game extends JPanel {
             	user_block.moveDown();
             	repaint();
             	if (map.conflict(user_block, user_block.index_x, user_block.index_y)){
+    				if (user_block.index_y <=1) 
+    					{
+    						gameOver = true;
+    					}
+    				
             		linesCleared = map.addBlock (user_block,user_block.index_x, user_block.index_y-1);
-			updateStats(linesCleared);
+            		updateStats(linesCleared);
             		user_block = getNextBlockRemoveLast();
             	}
             	//System.out.println("MAP IN CONFLICT : " + map.conflict(user_block));
@@ -124,7 +136,6 @@ public class Game extends JPanel {
             }
         };
         this.setFocusable(true);
-		//this.map = new Map(40,40,30);
         // HARD CODED screen dimension
 		this.map = new Map(600,600,30,true);
         user_block = getNextBlockRemoveLast();
@@ -173,6 +184,13 @@ public class Game extends JPanel {
 		else myTimer.start();
 			
 		returnState = Tetris.STAGE_GAME;
+
+		if (gameOver){
+			returnState = Tetris.STAGE_MENU;
+			// (TODO) Add to high score or something //
+			this.reset();
+			myTimer.stop();
+		}
 		return temp;
     }
     public void freeze ()
@@ -187,6 +205,12 @@ public class Game extends JPanel {
 	}
     public void reset ()
 	{
+    	this.score = 0;
+
+		this.map = new Map(600,600,30,true);
+		user_block = getNextBlockRemoveLast ();
+		this.gameOver = false;
+		setBlocks ();
     }
     
     
